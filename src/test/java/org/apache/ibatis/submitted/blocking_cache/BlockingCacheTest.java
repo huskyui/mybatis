@@ -54,6 +54,7 @@ public class BlockingCacheTest {
 
   @Test
   public void testBlockingCache() {
+    // 开始线程池，执行两条语句
     ExecutorService defaultThreadPool = Executors.newFixedThreadPool(2);
 
     long init = System.currentTimeMillis();
@@ -70,6 +71,7 @@ public class BlockingCacheTest {
 
     defaultThreadPool.shutdown();
 
+    // 判断线程池是否结束
     while (!defaultThreadPool.isTerminated()) {
     }
 

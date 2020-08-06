@@ -34,6 +34,7 @@ public class ExceptionFactory {
   public static RuntimeException wrapException(String message, Exception e) {
     //查找错误上下文，得到错误原因，传给PersistenceException
     //每个线程都会有一个ErrorContext，所以可以得到，  .message(message).cause是典型的构建器模式
+    // ErrorContext.instance().message(message).cause(e).toString()这个是builder形式的设计
     return new PersistenceException(ErrorContext.instance().message(message).cause(e).toString(), e);
   }
 

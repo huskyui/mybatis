@@ -152,6 +152,7 @@ public class CacheKey implements Cloneable, Serializable {
   @Override
   public CacheKey clone() throws CloneNotSupportedException {
     CacheKey clonedCacheKey = (CacheKey) super.clone();
+    // clone的时候，如果是对象在深克隆需要 对对应做处理
     clonedCacheKey.updateList = new ArrayList<Object>(updateList);
     return clonedCacheKey;
   }

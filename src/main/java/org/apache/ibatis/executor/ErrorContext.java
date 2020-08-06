@@ -36,7 +36,7 @@ public class ErrorContext {
   private String sql;
   private Throwable cause;
  
-  //单例模式
+  //单例模式，这里确实单例模式，prvate,每一个线程都有一个自己的ErrorContext
   private ErrorContext() {
   }
 
@@ -68,7 +68,7 @@ public class ErrorContext {
     return LOCAL.get();
   }
 
-  //以下都是建造者模式
+  //以下都是建造者模式 builder模式
   public ErrorContext resource(String resource) {
     this.resource = resource;
     return this;

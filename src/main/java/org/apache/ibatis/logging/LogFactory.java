@@ -36,8 +36,14 @@ public final class LogFactory {
   //具体究竟用哪个日志框架，那个框架所对应logger的构造函数
   private static Constructor<? extends Log> logConstructor;
 
+  // 类加载器，执行clinit方法，初始化logConstructor和static方法
   static {
     //这边乍一看以为开了几个并行的线程去决定使用哪个具体框架的logging，其实不然
+    // tryImplementation中，会判断是否logConstructor是否为空，如果为空，会执行Runnable里面的run方法
+    // 并且里面还要一个try catch,找不到也没关系，catch 异常，不处理
+    // 如果没有配置log,你们就是use No logging
+
+
     //slf4j
     tryImplementation(new Runnable() {
       @Override
@@ -82,7 +88,7 @@ public final class LogFactory {
     });
   }
 
-  //单例模式，不得自己new实例
+  //单例模式，不得自己new实例|| 果然和我想的一样，不能自己new
   private LogFactory() {
     // disable construction
   }
