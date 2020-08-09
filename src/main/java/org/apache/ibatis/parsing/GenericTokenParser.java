@@ -30,6 +30,7 @@ public class GenericTokenParser {
   //记号处理器
   private final TokenHandler handler;
 
+  // 我看测试里面是openToken是 ${  closeToken 是 }
   public GenericTokenParser(String openToken, String closeToken, TokenHandler handler) {
     this.openToken = openToken;
     this.closeToken = closeToken;
@@ -58,14 +59,18 @@ public class GenericTokenParser {
             builder.append(src, offset, src.length - offset);
             offset = src.length;
           } else {
+            // 这边才是正常的截取，其他都是歪瓜裂枣
+            // 这一句是把正常不需要替换的直接加入
             builder.append(src, offset, start - offset);
             offset = start + openToken.length();
             String content = new String(src, offset, end - offset);
             //得到一对大括号里的字符串后，调用handler.handleToken,比如替换变量这种功能
+            // 此处是替换需要特殊变量，通过key获得value
             builder.append(handler.handleToken(content));
             offset = end + closeToken.length();
           }
         }
+        // 不用修改字符串的形式判断startToken是否存在，如果是我写的话，肯定是会截取0到上面的一个值，然后再用indexOf（）判断是否为-1
         start = text.indexOf(openToken, offset);
       }
       if (offset < src.length) {

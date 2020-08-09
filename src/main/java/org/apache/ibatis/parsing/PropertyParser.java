@@ -30,6 +30,7 @@ public class PropertyParser {
   }
 
   public static String parse(String string, Properties variables) {
+    // 这个properties继承与HashTable,实现了map方法
     VariableTokenHandler handler = new VariableTokenHandler(variables);
     GenericTokenParser parser = new GenericTokenParser("${", "}", handler);
     return parser.parse(string);

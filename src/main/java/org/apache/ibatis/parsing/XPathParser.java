@@ -150,6 +150,7 @@ public class XPathParser {
 
   public String evalString(Object root, String expression) {
 	//1.先用xpath解析
+    // 提取xml的标签里面的值
     String result = (String) evaluate(expression, root, XPathConstants.STRING);
 	//2.再调用PropertyParser去解析,也就是替换 ${} 这种格式的字符串
     result = PropertyParser.parse(result, variables);
@@ -254,6 +255,7 @@ public class XPathParser {
       factory.setIgnoringComments(true);
 		//忽略空白
       factory.setIgnoringElementContentWhitespace(false);
+        // cdata是为了不让xml解析器解析的 由<![CDATA[开始  由]]>结束
 		//把 CDATA 节点转换为 Text 节点
       factory.setCoalescing(false);
 		//扩展实体引用

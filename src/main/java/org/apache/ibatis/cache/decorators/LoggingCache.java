@@ -99,6 +99,7 @@ public class LoggingCache implements Cache {
     return delegate.equals(obj);
   }
 
+  // 日志命中率 hits/total
   private double getHitRatio() {
     return (double) hits / (double) requests;
   }

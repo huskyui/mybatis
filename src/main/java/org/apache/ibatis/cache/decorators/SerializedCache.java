@@ -60,6 +60,7 @@ public class SerializedCache implements Cache {
   public void putObject(Object key, Object object) {
     if (object == null || object instanceof Serializable) {
         //先序列化，再委托被包装者putObject
+      // key 不变，value就是序列化一下，
       delegate.putObject(key, serialize((Serializable) object));
     } else {
       throw new CacheException("SharedCache failed to make a copy of a non-serializable object: " + object);
@@ -98,6 +99,7 @@ public class SerializedCache implements Cache {
     return delegate.equals(obj);
   }
 
+  // 序列化一下
   private byte[] serialize(Serializable value) {
     try {
         //序列化核心就是ByteArrayOutputStream
@@ -112,6 +114,7 @@ public class SerializedCache implements Cache {
     }
   }
 
+  // 反序列化
   private Serializable deserialize(byte[] value) {
     Serializable result;
     try {

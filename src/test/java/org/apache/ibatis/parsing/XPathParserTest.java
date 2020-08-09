@@ -29,11 +29,13 @@ public class XPathParserTest {
     String resource = "resources/nodelet_test.xml";
     InputStream inputStream = Resources.getResourceAsStream(resource);
     XPathParser parser = new XPathParser(inputStream, false, null, null);
+
     assertEquals((Long)1970l, parser.evalLong("/employee/birth_date/year"));
     assertEquals((short) 6, (short) parser.evalShort("/employee/birth_date/month"));
     assertEquals((Integer) 15, parser.evalInteger("/employee/birth_date/day"));
     assertEquals((Float) 5.8f, parser.evalFloat("/employee/height"));
     assertEquals((Double) 5.8d, parser.evalDouble("/employee/height"));
+    // @是employee的同级的意思
     assertEquals("${id_var}", parser.evalString("/employee/@id"));
     assertEquals(Boolean.TRUE, parser.evalBoolean("/employee/active"));
     assertEquals("<id>${id_var}</id>", parser.evalNode("/employee/@id").toString().trim());

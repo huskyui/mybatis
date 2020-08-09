@@ -29,7 +29,7 @@ public class GenericTokenParserTest {
     public VariableTokenHandler(Map<String, String> variables) {
       this.variables = variables;
     }
-
+    // 实现handleToken,就是从map中读取key
     public String handleToken(String content) {
       return variables.get(content);
     }
@@ -38,6 +38,8 @@ public class GenericTokenParserTest {
   @Test
   public void shouldDemonstrateGenericTokenReplacement() {
     GenericTokenParser parser = new GenericTokenParser("${", "}", new VariableTokenHandler(new HashMap<String, String>() {
+      // 预存变量名，以及变量值
+      // 这是java8中的初始化map
       {
         put("first_name", "James");
         put("initial", "T");
@@ -77,6 +79,7 @@ public class GenericTokenParserTest {
     assertEquals("The null is ${skipped} variable", parser.parse("The ${skipped} is \\${skipped} variable"));
   }
 
+  // 测试时间：不能超过1000ms
   @Test(timeout = 1000)
   public void shouldParseFastOnJdk7u6() {
     // issue #760
@@ -89,6 +92,7 @@ public class GenericTokenParserTest {
       }
     }));
 
+    // 多用StringBuilder
     StringBuilder input = new StringBuilder();
     for (int i = 0; i < 10000; i++) {
       input.append("${first_name} ${initial} ${last_name} reporting. ");

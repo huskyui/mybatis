@@ -96,6 +96,7 @@ public class ScheduledCache implements Cache {
   private boolean clearWhenStale() {
     //如果到时间了，清空一下缓存
     if (System.currentTimeMillis() - lastClear > clearInterval) {
+      // 会给lastClear设置新值
       clear();
       return true;
     }
