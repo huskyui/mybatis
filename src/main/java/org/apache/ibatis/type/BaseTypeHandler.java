@@ -37,8 +37,10 @@ public abstract class BaseTypeHandler<T> extends TypeReference<T> implements Typ
   public void setConfiguration(Configuration c) {
     this.configuration = c;
   }
+  //  实现一个大致的一个逻辑，再其中存放一下抽象方法放给子类来具体实现其细节. 抽象类来完成模板方法，具体方法让给子类去实现
 
   @Override
+  // 此处的i是index的意思
   public void setParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException {
     //特殊情况，设置NULL
     if (parameter == null) {

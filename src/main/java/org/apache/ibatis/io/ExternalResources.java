@@ -45,6 +45,7 @@ public class ExternalResources {
     try {
       source = new FileInputStream(sourceFile).getChannel();
       destination = new FileOutputStream(destFile).getChannel();
+      // 赋值文件
       destination.transferFrom(source, 0, source.size());
     } finally {
       closeQuietly(source);

@@ -154,6 +154,7 @@ public class TypeAliasRegistry {
       // Ignore inner classes and interfaces (including package-info.java)
       // Skip also inner classes. See issue #6
       if (!type.isAnonymousClass() && !type.isInterface() && !type.isMemberClass()) {
+        // 注册别名1.根据alias注解2.根据类的class.simpleName
         registerAlias(type);
       }
     }
@@ -164,10 +165,13 @@ public class TypeAliasRegistry {
     //如果没有类型别名，用Class.getSimpleName来注册
     String alias = type.getSimpleName();
 	//或者通过Alias注解来注册(Class.getAnnotation)
+    // Alias注解是Runtime的，运行时
     Alias aliasAnnotation = type.getAnnotation(Alias.class);
+    // 先判断一下，如果有这个，那么就用注解里面的值
     if (aliasAnnotation != null) {
       alias = aliasAnnotation.value();
-    } 
+    }
+
     registerAlias(alias, type);
   }
 
@@ -186,6 +190,7 @@ public class TypeAliasRegistry {
     TYPE_ALIASES.put(key, value);
   }
 
+  // 这边用的是mybatis自己的类加载器来加载class，通过class字节码文件的全类名，返回加载的类
   public void registerAlias(String alias, String value) {
     try {
       registerAlias(alias, Resources.classForName(value));
@@ -197,6 +202,7 @@ public class TypeAliasRegistry {
   /**
    * @since 3.2.2
    */
+  // 返回一个无法修改的map，防止有人修改
   public Map<String, Class<?>> getTypeAliases() {
     return Collections.unmodifiableMap(TYPE_ALIASES);
   }

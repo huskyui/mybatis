@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
  * @param <T> the referenced type
  * @author Simone Tripodi
  * @since 3.1.0
- * 3.1新加的类型引用,为了引用一个泛型类型
+ * 3.1新加的类型引用,为了引用一个泛型类型http://www.cnblogs.com/sunzhenchao/archive/2013/04/09/3009431.html
  */
 public abstract class TypeReference<T> {
 

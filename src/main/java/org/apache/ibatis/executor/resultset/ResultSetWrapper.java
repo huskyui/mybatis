@@ -57,6 +57,7 @@ class ResultSetWrapper {
     final int columnCount = metaData.getColumnCount();
     for (int i = 1; i <= columnCount; i++) {
       columnNames.add(configuration.isUseColumnLabel() ? metaData.getColumnLabel(i) : metaData.getColumnName(i));
+      // 通过获取metaData获取column的类型，来获取JdbcType里面的枚举类来获取对应的JdbcType  当然，我也有点没看懂
       jdbcTypes.add(JdbcType.forCode(metaData.getColumnType(i)));
       classNames.add(metaData.getColumnClassName(i));
     }

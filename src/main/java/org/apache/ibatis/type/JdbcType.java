@@ -69,6 +69,7 @@ public enum JdbcType {
   private static Map<Integer,JdbcType> codeLookup = new HashMap<Integer,JdbcType>();
 
   //一开始就将数字对应的枚举型放入hashmap
+  // 类加载期间
   static {
     for (JdbcType type : JdbcType.values()) {
       codeLookup.put(type.TYPE_CODE, type);

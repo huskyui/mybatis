@@ -56,6 +56,7 @@ public class ClassLoaderWrapper {
    * @return the stream or null
    */
   public URL getResourceAsURL(String resource, ClassLoader classLoader) {
+    // 此处是将classLoader放入，以便获取一个数组ClassLoader
     return getResourceAsURL(resource, getClassLoaders(classLoader));
   }
 
@@ -88,6 +89,7 @@ public class ClassLoaderWrapper {
    * @throws ClassNotFoundException Duh.
    */
   public Class<?> classForName(String name) throws ClassNotFoundException {
+    // 使用classLoader生成class
     return classForName(name, getClassLoaders(null));
   }
 
@@ -105,7 +107,6 @@ public class ClassLoaderWrapper {
 
   /*
    * Try to get a resource from a group of classloaders
-   * 用5个类加载器一个个查找资源，只要其中任何一个找到，就返回
    *
    * @param resource    - the resource to get
    * @param classLoader - the classloaders to examine
@@ -116,6 +117,7 @@ public class ClassLoaderWrapper {
       if (null != cl) {
 
         // try to find the resource as passed
+        // 读取classpath下的文件一般就是Thread.currentThread然后获取classloader,然后再获取getResourceAsStream
         InputStream returnValue = cl.getResourceAsStream(resource);
 
         // now, some class loaders want this leading "/", so we'll add it and try again if we didn't find the resource
@@ -146,7 +148,7 @@ public class ClassLoaderWrapper {
     for (ClassLoader cl : classLoader) {
 
       if (null != cl) {
-
+        // 5个类加载器
         // look for the resource as passed in...
         url = cl.getResource(resource);
 
@@ -187,7 +189,7 @@ public class ClassLoaderWrapper {
       if (null != cl) {
 
         try {
-
+          // 获取一个class对象
           Class<?> c = Class.forName(name, true, cl);
 
           if (null != c) {

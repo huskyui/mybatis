@@ -43,6 +43,7 @@ import org.apache.ibatis.logging.LogFactory;
 public class DefaultVFS extends VFS {
   private static final Log log = LogFactory.getLog(ResolverUtil.class);
 
+  // jar包的魔数
   /** The magic header that indicates a JAR (ZIP) file. */
   private static final byte[] JAR_MAGIC = { 'P', 'K', 3, 4 };
 

@@ -24,6 +24,7 @@ class ByteArrayUtils {
     // Prevent Instantiation
   }
 
+  // 一个封装类数组，转为基本类型数组
   static byte[] convertToPrimitiveArray(Byte[] objects) {
     final byte[] bytes = new byte[objects.length];
     for (int i = 0; i < objects.length; i++) {
@@ -32,6 +33,7 @@ class ByteArrayUtils {
     return bytes;
   }
 
+  // 和上面相反
   static Byte[] convertToObjectArray(byte[] bytes) {
     final Byte[] objects = new Byte[bytes.length];
     for (int i = 0; i < bytes.length; i++) {

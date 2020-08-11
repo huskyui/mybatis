@@ -191,6 +191,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             //（二）调用TypeAliasRegistry.registerAlias
             if (alias == null) {
               //alias可以省略
+              // 这个class 生成一个简单的class.getSimpleName或者用alias
               typeAliasRegistry.registerAlias(clazz);
             } else {
               typeAliasRegistry.registerAlias(alias, clazz);

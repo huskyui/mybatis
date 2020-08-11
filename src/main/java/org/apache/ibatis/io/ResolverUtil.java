@@ -177,6 +177,7 @@ public class ResolverUtil<T> {
       return this;
     }
 
+    // Test接口由两个实现类，一个IsA,还有一个AnnotatedWith.
     Test test = new IsA(parent);
     for (String pkg : packageNames) {
       find(test, pkg);
@@ -217,13 +218,16 @@ public class ResolverUtil<T> {
    */
   //主要的方法，找一个package下满足条件的所有类,被TypeHanderRegistry,MapperRegistry,TypeAliasRegistry调用
   public ResolverUtil<T> find(Test test, String packageName) {
+    // 此处将path里面的 . replace为 /
     String path = getPackagePath(packageName);
 
     try {
-        //通过VFS来深入jar包里面去找一个class
+        //通过VFS来深入jar包里面去找一个class,这里面是一个树级结构，可能会有多个分层
       List<String> children = VFS.getInstance().list(path);
       for (String child : children) {
+        // 与可能是目录，目录是以 / 结尾，所以要排除这些
         if (child.endsWith(".class")) {
+          // 如果当先线程的classLoader不存在就，就用自己的classLoader,并且生成一个Set<Class>
           addIfMatching(test, child);
         }
       }
@@ -240,6 +244,7 @@ public class ResolverUtil<T> {
    * 
    * @param packageName The Java package name to convert to a path
    */
+  // 将包类的字符串中的.转化为/
   protected String getPackagePath(String packageName) {
     return packageName == null ? null : packageName.replace('.', '/');
   }

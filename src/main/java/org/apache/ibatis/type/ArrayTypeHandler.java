@@ -24,6 +24,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// 基础BaseTypeHandler
 public class ArrayTypeHandler extends BaseTypeHandler<Object> {
 
   public ArrayTypeHandler() {

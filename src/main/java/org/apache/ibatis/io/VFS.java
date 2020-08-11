@@ -53,13 +53,17 @@ public abstract class VFS {
    */
   @SuppressWarnings("unchecked")
   public static VFS getInstance() {
+    // 如果instance 已经生成就直接返回
     if (instance != null) {
       return instance;
     }
 
+    // 如果不存在，就新增
     // Try the user implementations first, then the built-ins
     List<Class<? extends VFS>> impls = new ArrayList<Class<? extends VFS>>();
+    // 用户自定义继承的VFS,然后添加到其中
     impls.addAll(USER_IMPLEMENTATIONS);
+    // 系统自带的，两个VFS实现：DefaultVFS和JBoss6VFS
     impls.addAll(Arrays.asList((Class<? extends VFS>[]) IMPLEMENTATIONS));
 
     // Try each implementation class until a valid one is found
@@ -93,6 +97,7 @@ public abstract class VFS {
    * 
    * @param clazz The {@link VFS} implementation class to add.
    */
+  // 添加用户自定义的VFS实现
   public static void addImplClass(Class<? extends VFS> clazz) {
     if (clazz != null) {
       USER_IMPLEMENTATIONS.add(clazz);
@@ -121,6 +126,9 @@ public abstract class VFS {
     if (clazz == null) {
       return null;
     }
+    // class获取method方法
+    // clazz.getMethod(String methodName,Class<?> ...parameterTypes)
+    // 调用就是clazz.invoke(实例对象,Object ...parameters)
     try {
       return clazz.getMethod(methodName, parameterTypes);
     } catch (SecurityException e) {
@@ -169,6 +177,7 @@ public abstract class VFS {
    * @throws IOException If I/O errors occur
    */
   protected static List<URL> getResources(String path) throws IOException {
+    // getResources(String pathName)读取目录下的URL,Collections.list(Enumeration<URL>)转为ArrayList
     return Collections.list(Thread.currentThread().getContextClassLoader().getResources(path));
   }
 
@@ -176,7 +185,7 @@ public abstract class VFS {
   public abstract boolean isValid();
 
   /**
-   * Recursively list the full resource path of all the resources that are children of the
+   * Recursively list the full resource path of all the that are children of the
    * resource identified by a URL.
    * 
    * @param url The URL that identifies the resource to list.
@@ -198,6 +207,7 @@ public abstract class VFS {
   public List<String> list(String path) throws IOException {
     List<String> names = new ArrayList<String>();
     for (URL url : getResources(path)) {
+      // 使用jarInputStream 读取固定目录，以及对应子目录的相关数据
       names.addAll(list(url, path));
     }
     return names;
