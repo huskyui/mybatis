@@ -50,7 +50,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
   @Override
   public <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
     //根据接口创建具体的类
-    //1.解析接口
+    //1.解析接口 如果type是接口的话，就返回对应的实现类，如果不是举例情况，就用原来的接口
     Class<?> classToCreate = resolveInterface(type);
     // we know types are assignable
     //2.实例化类
@@ -69,17 +69,22 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
       Constructor<T> constructor;
       //如果没有传入constructor，调用空构造函数，核心是调用Constructor.newInstance
       if (constructorArgTypes == null || constructorArgs == null) {
+        // 如果没有参数，就用默认构造函数,你们就用Constructor.newInstance()方法
         constructor = type.getDeclaredConstructor();
+        // 如果权限不够，就修改一下，设置为允许
         if (!constructor.isAccessible()) {
           constructor.setAccessible(true);
         }
         return constructor.newInstance();
       }
       //如果传入constructor，调用传入的构造函数，核心是调用Constructor.newInstance
+      // 先根据一个数组，构造函数参数的类型数组
       constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[constructorArgTypes.size()]));
+      // 修改一下权限
       if (!constructor.isAccessible()) {
         constructor.setAccessible(true);
       }
+      // 构造器newInstance
       return constructor.newInstance(constructorArgs.toArray(new Object[constructorArgs.size()]));
     } catch (Exception e) {
         //如果出错，包装一下，重新抛出自己的异常
@@ -126,6 +131,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
   @Override
   public <T> boolean isCollection(Class<T> type) {
       //是否是Collection的子类
+    // 这是运行时相关的
     return Collection.class.isAssignableFrom(type);
   }
 

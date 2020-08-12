@@ -18,6 +18,7 @@ package org.apache.ibatis.reflection.property;
 import java.util.Iterator;
 
 /**
+ * fixme 这边有点没看懂诶
  * @author Clinton Begin
  */
 /**
@@ -48,6 +49,7 @@ public class PropertyTokenizer implements Iterable<PropertyTokenizer>, Iterator<
     //把中括号里的数字给解析出来
     delim = name.indexOf('[');
     if (delim > -1) {
+      // start是[的下一个，end是.的前一个
       index = name.substring(delim + 1, name.length() - 1);
       name = name.substring(0, delim);
     }

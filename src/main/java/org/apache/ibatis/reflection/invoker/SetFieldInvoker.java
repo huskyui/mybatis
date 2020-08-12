@@ -33,6 +33,7 @@ public class SetFieldInvoker implements Invoker {
   }
 
   //就是调用Field.set
+  // 同Get方法
   @Override
   public Object invoke(Object target, Object[] args) throws IllegalAccessException, InvocationTargetException {
     field.set(target, args[0]);

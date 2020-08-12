@@ -127,6 +127,7 @@ public class MetaClassTest {
   @Test
   public void shouldFindPropertyName() {
     MetaClass meta = MetaClass.forClass(RichType.class);
+    // 都换成大写了，肯定是可以找到的
     assertEquals("richField", meta.findProperty("RICHfield"));
   }
 

@@ -42,6 +42,7 @@ public class MethodInvoker implements Invoker {
   }
 
   //就是调用Method.invoke
+  // 封装了一下Method.invoke
   @Override
   public Object invoke(Object target, Object[] args) throws IllegalAccessException, InvocationTargetException {
     return method.invoke(target, args);

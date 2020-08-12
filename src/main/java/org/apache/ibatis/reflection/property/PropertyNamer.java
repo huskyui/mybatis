@@ -32,7 +32,7 @@ public final class PropertyNamer {
     // Prevent Instantiation of Static Class
   }
 
-    //方法转为属性
+    //方法转为属性，譬如getName,去除get，然后将Name首字母转为小写
   public static String methodToProperty(String name) {
       //去掉get|set|is
     if (name.startsWith("is")) {

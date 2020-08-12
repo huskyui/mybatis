@@ -33,6 +33,7 @@ public class GetFieldInvoker implements Invoker {
   }
 
   //就是调用Field.get
+  // 不要担心field的accessible问题，前面已经设置好
   @Override
   public Object invoke(Object target, Object[] args) throws IllegalAccessException, InvocationTargetException {
     return field.get(target);

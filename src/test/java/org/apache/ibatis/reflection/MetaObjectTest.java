@@ -40,7 +40,9 @@ public class MetaObjectTest {
   public void shouldGetAndSetField() {
     RichType rich = new RichType();
     MetaObject meta = SystemMetaObject.forObject(rich);
+    // 调用反射，将richField为foo
     meta.setValue("richField", "foo");
+    // field获取对应getField这个方法，如何调用method.invoke(object)
     assertEquals("foo", meta.getValue("richField"));
   }
 
@@ -48,6 +50,7 @@ public class MetaObjectTest {
   public void shouldGetAndSetNestedField() {
     RichType rich = new RichType();
     MetaObject meta = SystemMetaObject.forObject(rich);
+    // 递归生成对象并放置数据
     meta.setValue("richType.richField", "foo");
     assertEquals("foo", meta.getValue("richType.richField"));
   }
@@ -72,7 +75,9 @@ public class MetaObjectTest {
   public void shouldGetAndSetMapPair() {
     RichType rich = new RichType();
     MetaObject meta = SystemMetaObject.forObject(rich);
+    // 这是在richMap中创建了一个rich的map,并且放入了一个键值对，key：foo
     meta.setValue("richMap.key", "foo");
+    System.out.println(rich.getRichMap().get("key"));
     assertEquals("foo", meta.getValue("richMap.key"));
   }
 
@@ -104,6 +109,7 @@ public class MetaObjectTest {
   public void shouldGetAndSetListItem() {
     RichType rich = new RichType();
     MetaObject meta = SystemMetaObject.forObject(rich);
+    // 给数组类型赋值
     meta.setValue("richList[0]", "foo");
     assertEquals("foo", meta.getValue("richList[0]"));
   }
@@ -174,6 +180,7 @@ public class MetaObjectTest {
   public void shouldVerifyHasReadablePropertiesReturnedByGetReadablePropertyNames() {
     MetaObject object = SystemMetaObject.forObject(new Author());
     for (String readable : object.getGetterNames()) {
+      System.out.println(readable);
       assertTrue(object.hasGetter(readable));
     }
   }
@@ -208,13 +215,16 @@ public class MetaObjectTest {
 
   @Test
   public void shouldDemonstrateDeeplyNestedMapProperties() {
+    // 本以为是类型擦除，原来是转为metaMap时，就变成了Map<String,Object>
     HashMap<String, String> map = new HashMap<String, String>();
     MetaObject metaMap = SystemMetaObject.forObject(map);
 
+
+    // map类型 always true
     assertTrue(metaMap.hasSetter("id"));
     assertTrue(metaMap.hasSetter("name.first"));
     assertTrue(metaMap.hasSetter("address.street"));
-
+    // 刚开始是没有这些的，都为false
     assertFalse(metaMap.hasGetter("id"));
     assertFalse(metaMap.hasGetter("name.first"));
     assertFalse(metaMap.hasGetter("address.street"));
@@ -226,7 +236,6 @@ public class MetaObjectTest {
     metaMap.setValue("address.city", "This City");
     metaMap.setValue("address.province", "A Province");
     metaMap.setValue("address.postal_code", "1A3 4B6");
-
     assertTrue(metaMap.hasGetter("id"));
     assertTrue(metaMap.hasGetter("name.first"));
     assertTrue(metaMap.hasGetter("address.street"));

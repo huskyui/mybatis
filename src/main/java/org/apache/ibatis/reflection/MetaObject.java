@@ -62,6 +62,7 @@ public class MetaObject {
       this.objectWrapper = new CollectionWrapper(this, (Collection) object);
     } else {
         //除此以外，返回BeanWrapper
+      // 此处会把object也传过去
       this.objectWrapper = new BeanWrapper(this, object);
     }
   }
@@ -127,6 +128,7 @@ public class MetaObject {
   //如person[0].birthdate.year
   //具体测试用例可以看MetaObjectTest
   public Object getValue(String name) {
+    // 可能是层级关系（不确定）
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {
       MetaObject metaValue = metaObjectForProperty(prop.getIndexedName());
@@ -155,10 +157,11 @@ public class MetaObject {
           return;
         } else {
             //否则还得new一个，委派给ObjectWrapper.instantiatePropertyValue
+          // 实例化属性，也就是new了一个对象
           metaValue = objectWrapper.instantiatePropertyValue(name, prop, objectFactory);
         }
       }
-      //递归调用setValue
+      //递归调用setValue，那就是下一代的传奇了
       metaValue.setValue(prop.getChildren(), value);
     } else {
         //到了最后一层了，所以委派给ObjectWrapper.set

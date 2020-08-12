@@ -77,14 +77,15 @@ public class Reflector {
     type = clazz;
     //加入构造函数
     addDefaultConstructor(clazz);
-    //加入getter
+    //加入getter,解决冲突的getter方法
     addGetMethods(clazz);
-    //加入setter
+    //加入setter，解决冲突的setter方法
     addSetMethods(clazz);
     //加入字段
     addFields(clazz);
     readablePropertyNames = getMethods.keySet().toArray(new String[getMethods.keySet().size()]);
     writeablePropertyNames = setMethods.keySet().toArray(new String[setMethods.keySet().size()]);
+    // 变身，字段名，生成map   key:value -> 大写property：property
     for (String propName : readablePropertyNames) {
         //这里为了能找到某一个属性，就把他变成大写作为map的key。。。
       caseInsensitivePropertyMap.put(propName.toUpperCase(Locale.ENGLISH), propName);
@@ -97,7 +98,9 @@ public class Reflector {
   private void addDefaultConstructor(Class<?> clazz) {
     Constructor<?>[] consts = clazz.getDeclaredConstructors();
     for (Constructor<?> constructor : consts) {
+      // 参数的数目为 0
       if (constructor.getParameterTypes().length == 0) {
+          // 不是很理解下面这个accessPrivateMethods方法
         if (canAccessPrivateMethods()) {
           try {
             constructor.setAccessible(true);
@@ -115,9 +118,11 @@ public class Reflector {
   private void addGetMethods(Class<?> cls) {
     Map<String, List<Method>> conflictingGetters = new HashMap<String, List<Method>>();
     //这里getter和setter都调用了getClassMethods，有点浪费效率了。不妨把addGetMethods,addSetMethods合并成一个方法叫addMethods
+      // 这里set和get是不同的
     Method[] methods = getClassMethods(cls);
     for (Method method : methods) {
       String name = method.getName();
+      // 长度大于3并且是以get开头的，并且是参数长度是0
       if (name.startsWith("get") && name.length() > 3) {
         if (method.getParameterTypes().length == 0) {
           name = PropertyNamer.methodToProperty(name);
@@ -143,11 +148,12 @@ public class Reflector {
       } else {
         Method getter = firstMethod;
         Class<?> getterType = firstMethod.getReturnType();
+        // 这里判断的可能就是isProperty和getProperty,也就是说，要注意，不能乱写get方法
         while (iterator.hasNext()) {
           Method method = iterator.next();
           Class<?> methodType = method.getReturnType();
           if (methodType.equals(getterType)) {
-            throw new ReflectionException("Illegal overloaded getter method with ambiguous type for property " 
+            throw new ReflectionException("Illegal overloaded getter method with ambiguous type for property "
                 + propName + " in class " + firstMethod.getDeclaringClass()
                 + ".  This breaks the JavaBeans " + "specification and can cause unpredicatble results.");
           } else if (methodType.isAssignableFrom(getterType)) {
@@ -156,7 +162,7 @@ public class Reflector {
             getter = method;
             getterType = methodType;
           } else {
-            throw new ReflectionException("Illegal overloaded getter method with ambiguous type for property " 
+            throw new ReflectionException("Illegal overloaded getter method with ambiguous type for property "
                 + propName + " in class " + firstMethod.getDeclaringClass()
                 + ".  This breaks the JavaBeans " + "specification and can cause unpredicatble results.");
           }
@@ -241,6 +247,7 @@ public class Reflector {
   private void addFields(Class<?> clazz) {
     Field[] fields = clazz.getDeclaredFields();
     for (Field field : fields) {
+      // 给每一个field都为Accessible设置为true
       if (canAccessPrivateMethods()) {
         try {
           field.setAccessible(true);
@@ -302,7 +309,7 @@ public class Reflector {
     while (currentClass != null) {
       addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
 
-      // we also need to look for interface methods - 
+      // we also need to look for interface methods -
       // because the class may be abstract
       Class<?>[] interfaces = currentClass.getInterfaces();
       for (Class<?> anInterface : interfaces) {
@@ -489,6 +496,7 @@ public class Reflector {
     if (classCacheEnabled) {
       // synchronized (clazz) removed see issue #461
         //对于每个类来说，我们假设它是不会变的，这样可以考虑将这个类的信息(构造函数，getter,setter,字段)加入缓存，以提高速度
+      // 也就是缓存的经典例子，容器中找不到就新建
       Reflector cached = REFLECTOR_MAP.get(clazz);
       if (cached == null) {
         cached = new Reflector(clazz);
