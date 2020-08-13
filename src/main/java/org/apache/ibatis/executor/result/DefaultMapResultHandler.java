@@ -51,9 +51,11 @@ public class DefaultMapResultHandler<K, V> implements ResultHandler {
     // TODO is that assignment always true?
     //得到一条记录
     //这边黄色警告没法去掉了？因为返回Object型
+    // 得到对应实体类
     final V value = (V) context.getResultObject();
     //MetaObject.forObject,包装一下记录
     //MetaObject是用反射来包装各种类型
+    // 工具类，来通过反射，直接通过mapkey来获取实例的值
     final MetaObject mo = MetaObject.forObject(value, objectFactory, objectWrapperFactory);
     // TODO is that assignment always true?
     final K key = (K) mo.getValue(mapKey);

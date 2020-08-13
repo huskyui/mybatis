@@ -59,6 +59,7 @@ public class JndiDataSourceFactory implements DataSourceFactory {
         Context ctx = (Context) initCtx.lookup(properties.getProperty(INITIAL_CONTEXT));
         dataSource = (DataSource) ctx.lookup(properties.getProperty(DATA_SOURCE));
       } else if (properties.containsKey(DATA_SOURCE)) {
+        // 读取参数，并设置参数
         dataSource = (DataSource) initCtx.lookup(properties.getProperty(DATA_SOURCE));
       }
 

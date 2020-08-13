@@ -34,6 +34,7 @@ public class ManyAnnoTest extends BaseDataTest {
   public void testGetMessageForEmptyDatabase() throws Exception {
     final Environment environment = new Environment("test", new JdbcTransactionFactory(), BaseDataTest.createBlogDataSource());
     final Configuration config = new Configuration(environment);
+    // 添加mapper
     config.addMapper(PostMapper.class);
     final SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(config);
     final SqlSession session = factory.openSession();

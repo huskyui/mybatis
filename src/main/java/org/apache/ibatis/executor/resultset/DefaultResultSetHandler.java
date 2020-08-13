@@ -287,6 +287,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       checkResultHandler();
       handleRowValuesForNestedResultMap(rsw, resultMap, resultHandler, rowBounds, parentMapping);
     } else {
+      // 处理rowBounds
       handleRowValuesForSimpleResultMap(rsw, resultMap, resultHandler, rowBounds, parentMapping);
     }
   }  
@@ -308,6 +309,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
 
   private void handleRowValuesForSimpleResultMap(ResultSetWrapper rsw, ResultMap resultMap, ResultHandler resultHandler, RowBounds rowBounds, ResultMapping parentMapping)
       throws SQLException {
+    // 处理RowBounds
     DefaultResultContext resultContext = new DefaultResultContext();
     skipRows(rsw.getResultSet(), rowBounds);
     while (shouldProcessMoreRows(resultContext, rowBounds) && rsw.getResultSet().next()) {
@@ -340,6 +342,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         rs.absolute(rowBounds.getOffset());
       }
     } else {
+      // 我笑了，这个rowBounds竟然是通过ResultSet.next连续执行
       for (int i = 0; i < rowBounds.getOffset(); i++) {
         rs.next();
       }

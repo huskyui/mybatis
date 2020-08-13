@@ -181,9 +181,10 @@ public class Configuration {
 
   public Configuration() {
     //注册更多的类型别名，至于为何不直接在TypeAliasRegistry里注册，还需进一步研究
+    // 事务类型
     typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
     typeAliasRegistry.registerAlias("MANAGED", ManagedTransactionFactory.class);
-
+    // 数据源工厂
     typeAliasRegistry.registerAlias("JNDI", JndiDataSourceFactory.class);
     typeAliasRegistry.registerAlias("POOLED", PooledDataSourceFactory.class);
     typeAliasRegistry.registerAlias("UNPOOLED", UnpooledDataSourceFactory.class);
@@ -199,6 +200,7 @@ public class Configuration {
     typeAliasRegistry.registerAlias("XML", XMLLanguageDriver.class);
     typeAliasRegistry.registerAlias("RAW", RawLanguageDriver.class);
 
+    // log的别名
     typeAliasRegistry.registerAlias("SLF4J", Slf4jImpl.class);
     typeAliasRegistry.registerAlias("COMMONS_LOGGING", JakartaCommonsLoggingImpl.class);
     typeAliasRegistry.registerAlias("LOG4J", Log4jImpl.class);
@@ -664,6 +666,7 @@ public class Configuration {
     if (validateIncompleteStatements) {
       buildAllStatements();
     }
+    // 这里的id，就是对应的是 packageName.className.methodName,当然
     return mappedStatements.get(id);
   }
 
@@ -816,6 +819,7 @@ public class Configuration {
 
     @SuppressWarnings("unchecked")
     public V put(String key, V value) {
+      // 此处的key是一个com.huskyui.dao.TestMapper.selectList这个形式的，
       if (containsKey(key)) {
         //如果已经存在此key了，直接报错
         throw new IllegalArgumentException(name + " already contains value for " + key);
@@ -844,6 +848,7 @@ public class Configuration {
       }
       //如果是模糊型的，也报错，提示用户
       //原来这个模糊型就是为了提示用户啊
+      // 妙啊，竟然这么写
       if (value instanceof Ambiguity) {
         throw new IllegalArgumentException(((Ambiguity) value).getSubject() + " is ambiguous in " + name
             + " (try using the full name including the namespace, or rename one of the entries)");
@@ -852,7 +857,9 @@ public class Configuration {
     }
 
     //取得短名称，也就是取得最后那个句号的后面那部分
+    // 去分割后，数组中最后一个元素
     private String getShortName(String key) {
+      //如果是.分割的话，这边是以点需要以\\开头
       final String[] keyparts = key.split("\\.");
       return keyparts[keyparts.length - 1];
     }

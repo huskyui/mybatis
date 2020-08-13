@@ -105,6 +105,9 @@ public interface SqlSession extends Closeable {
    * @param statement Unique identifier matching the statement to use.
    * @param mapKey The property to use as key for each value in the list. 这个参数会作为结果map的key
    * @return Map containing key pair data.
+   *
+   * key=>value | mapKey : 通过statement查出来的记录对应到mapKey的记录
+   *
    */
   <K, V> Map<K, V> selectMap(String statement, String mapKey);
 

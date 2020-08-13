@@ -94,9 +94,11 @@ public class MapperBuilderAssistant extends BaseBuilder {
     }
     if (isReference) {
       // is it qualified with any namespace yet?
+      // 来自大佬的询问，是否符合所有
       if (base.contains(".")) {
         return base;
       }
+      // 如果不包含.就到最后一行，currentNameSpace+"."+id
     } else {
       // is it qualified with this namespace yet?
       if (base.startsWith(currentNamespace + ".")) {
@@ -296,6 +298,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
 
     //又是建造者模式
     MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, id, sqlSource, sqlCommandType);
+    // 此处完全可以使用构造器模式，但是这个作者没用
     statementBuilder.resource(resource);
     statementBuilder.fetchSize(fetchSize);
     statementBuilder.statementType(statementType);
@@ -316,6 +319,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
 
     MappedStatement statement = statementBuilder.build();
     //建造好调用configuration.addMappedStatement
+    // 放的时候，只会获取statement的id，那么我们就要来看看id是如何构造的
     configuration.addMappedStatement(statement);
     return statement;
   }

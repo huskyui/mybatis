@@ -103,6 +103,8 @@ public class SqlSessionFactoryBuilder {
   }
     
   //最后一个build方法使用了一个Configuration作为参数,并返回DefaultSqlSessionFactory
+  // 也可以根据java配置来生成SqlSessionFactory,其实总的来说，都是通过java配置的方式，只不过xml是读取的一些信息，来实现的
+  // 见ManyAnnoTest.java
   public SqlSessionFactory build(Configuration config) {
     return new DefaultSqlSessionFactory(config);
   }

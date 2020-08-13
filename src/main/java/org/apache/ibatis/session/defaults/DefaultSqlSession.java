@@ -77,6 +77,8 @@ public class DefaultSqlSession implements SqlSession {
     //转而去调用selectList,很简单的，如果得到0条则返回null，得到1条则返回1条，得到多条报TooManyResultsException错
     // 特别需要主要的是当没有查询到结果的时候就会返回null。因此一般建议在mapper中编写resultType的时候使用包装类型
     //而不是基本类型，比如推荐使用Integer而不是int。这样就可以避免NPE
+
+    //RowBounds是一个
     List<T> list = this.<T>selectList(statement, parameter);
     if (list.size() == 1) {
       return list.get(0);
@@ -105,12 +107,14 @@ public class DefaultSqlSession implements SqlSession {
     final DefaultMapResultHandler<K, V> mapResultHandler = new DefaultMapResultHandler<K, V>(mapKey,
         configuration.getObjectFactory(), configuration.getObjectWrapperFactory());
     final DefaultResultContext context = new DefaultResultContext();
+    // 调用反射，获取实例的对应属性的值（通过属性名String），
     for (Object o : list) {
       //循环用DefaultMapResultHandler处理每条记录
       context.nextResultObject(o);
       mapResultHandler.handleResult(context);
     }
     //注意这个DefaultMapResultHandler里面存了所有已处理的记录(内部实现可能就是一个Map)，最后再返回一个Map
+    // 返回包装类的map
     return mapResultHandler.getMappedResults();
   }
 

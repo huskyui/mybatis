@@ -33,17 +33,19 @@ import org.apache.ibatis.reflection.ExceptionUtil;
  */
 /**
  * SqlSession管理员,可参考SqlSessionManagerTest
- *
+ * 就是使用了一个ThreadLocal来实现了
  */
 public class SqlSessionManager implements SqlSessionFactory, SqlSession {
 
   private final SqlSessionFactory sqlSessionFactory;
   private final SqlSession sqlSessionProxy;
 
+  // 线程私有的使用
   private ThreadLocal<SqlSession> localSqlSession = new ThreadLocal<SqlSession>();
 
   private SqlSessionManager(SqlSessionFactory sqlSessionFactory) {
     this.sqlSessionFactory = sqlSessionFactory;
+    // 代理形式的
     this.sqlSessionProxy = (SqlSession) Proxy.newProxyInstance(
         SqlSessionFactory.class.getClassLoader(),
         new Class[]{SqlSession.class},

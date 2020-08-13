@@ -561,6 +561,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             //直接把这个映射加入配置
             configuration.addMapper(mapperInterface);
           } else {
+            // 只能拥有一个
             throw new BuilderException("A mapper element may only specify a url, resource or class, but not more than one.");
           }
         }

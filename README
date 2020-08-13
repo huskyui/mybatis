@@ -47,17 +47,20 @@ org.apache.ibatis.reflection.wrapper
 可以参考MetaObjectTest来跟踪调试，基本上用到了reflection包下所有的类
 
 8.数据源
+todo 没看懂
 org.apache.ibatis.datasource
 org.apache.ibatis.datasource.jndi
 org.apache.ibatis.datasource.pooled
 org.apache.ibatis.datasource.unpooled
 
 9.事务
+todo 没看懂
 org.apache.ibatis.transaction
 org.apache.ibatis.transaction.jdbc
 org.apache.ibatis.transaction.managed
 
 10.会话
+還是有不少難點的
 org.apache.ibatis.session
 org.apache.ibatis.session.defaults
 
