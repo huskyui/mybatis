@@ -221,6 +221,7 @@ public abstract class AbstractSQL<T> {
         // Prevent Synthetic Access
     }
 
+    // conjunction 连接词的意思
     private void sqlClause(SafeAppendable builder, String keyword, List<String> parts, String open, String close,
                            String conjunction) {
       if (!parts.isEmpty()) {
@@ -259,6 +260,10 @@ public abstract class AbstractSQL<T> {
       sqlClause(builder, "LEFT OUTER JOIN", leftOuterJoin, "", "", "\nLEFT OUTER JOIN ");
       sqlClause(builder, "RIGHT OUTER JOIN", rightOuterJoin, "", "", "\nRIGHT OUTER JOIN ");
       //where条件默认拼接上AND
+      // mysql 执行顺序是 where,group by,having,order by
+      // 处理时，是先where,然后分组，然后对组数据进行having,然后再排序
+      // // conjunction 连接词的意思
+      // group by通过，连接的
       sqlClause(builder, "WHERE", where, "(", ")", " AND ");
       sqlClause(builder, "GROUP BY", groupBy, "", "", ", ");
       sqlClause(builder, "HAVING", having, "(", ")", " AND ");
@@ -287,7 +292,7 @@ public abstract class AbstractSQL<T> {
       return builder.toString();
     }
 
-    //拼装SQL
+    //拼装SQL,传入的是Appendable接口，
     public String sql(Appendable a) {
       SafeAppendable builder = new SafeAppendable(a);
       if (statementType == null) {

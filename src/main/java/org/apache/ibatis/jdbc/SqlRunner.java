@@ -102,10 +102,12 @@ public class SqlRunner {
    * @param args The arguments to be set on the statement.
    * @return The number of rows impacted or BATCHED_RESULTS if the statements are being batched.
    * @throws SQLException If statement preparation or execution fails
+   * 我终于找到了那个generate key的方式了
    */
   public int insert(String sql, Object... args) throws SQLException {
     PreparedStatement ps;
     if (useGeneratedKeySupport) {
+      // 返回generated keys,为什么是keys，可能是一条insert语句可以实现插入多个数据的原因？
       ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     } else {
       ps = connection.prepareStatement(sql);
@@ -120,9 +122,11 @@ public class SqlRunner {
           Map<String, Object> key = keys.get(0);
           Iterator<Object> i = key.values().iterator();
           if (i.hasNext()) {
+            // 有点东西
             Object genkey = i.next();
             if (genkey != null) {
               try {
+                // 既然是自增的，我相信他是int类型
                 return Integer.parseInt(genkey.toString());
               } catch (NumberFormatException e) {
                 //ignore, no numeric key suppot
@@ -206,8 +210,10 @@ public class SqlRunner {
   //设置参数
   private void setParameters(PreparedStatement ps, Object... args) throws SQLException {
     for (int i = 0, n = args.length; i < n; i++) {
+      // null
       if (args[i] == null) {
         throw new SQLException("SqlRunner requires an instance of Null to represent typed null values for JDBC compatibility");
+        // Null
       } else if (args[i] instanceof Null) {
         ((Null) args[i]).getTypeHandler().setParameter(ps, i + 1, null, ((Null) args[i]).getJdbcType());
       } else {
@@ -228,9 +234,11 @@ public class SqlRunner {
       List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
       List<String> columns = new ArrayList<String>();
       List<TypeHandler<?>> typeHandlers = new ArrayList<TypeHandler<?>>();
+      // 获取对应的返回字段信息
       ResultSetMetaData rsmd = rs.getMetaData();
       //先计算要哪些列，已经列的类型（TypeHandler）
       for (int i = 0, n = rsmd.getColumnCount(); i < n; i++) {
+        // i+1 因为sql相关的参数都是以1为起始的
         columns.add(rsmd.getColumnLabel(i + 1));
         try {
           Class<?> type = Resources.classForName(rsmd.getColumnClassName(i + 1));

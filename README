@@ -60,12 +60,15 @@ org.apache.ibatis.transaction.jdbc
 org.apache.ibatis.transaction.managed
 
 10.会话
-還是有不少難點的
+還是有不少難點的 todo 還剩一點需要看的
 org.apache.ibatis.session
 org.apache.ibatis.session.defaults
 
 11.jdbc单元测试工具
 org.apache.ibatis.jdbc
+org.apache.ibatis.AbstractSQL
+org.apache.ibatis.ScriptRunner
+org.apache.ibatis.SqlRunner
 
 12.构建
 org.apache.ibatis.builder

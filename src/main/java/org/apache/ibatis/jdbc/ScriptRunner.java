@@ -31,9 +31,12 @@ import java.sql.Statement;
 /**
  * 脚本运行器,可以运行SQL脚本，如建表，插入数据，作为单元测试的前期准备
  * 这个类其实可以被所有项目的单元测试作为工具所利用
+ *
+ * 就是读取
  */
 public class ScriptRunner {
 
+  // 不同系统的LINE_SEPARATOR是不同的，'\n'是默认值
   private static final String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
 
   private static final String DEFAULT_DELIMITER = ";";
@@ -127,6 +130,7 @@ public class ScriptRunner {
     }
   }
 
+  // 读取每一行，并执行
   private void executeLineByLine(Reader reader) {
     StringBuilder command = new StringBuilder();
     try {
