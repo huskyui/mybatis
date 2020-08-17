@@ -59,7 +59,10 @@ public class Jdbc3KeyGenerator implements KeyGenerator {
       rs = stmt.getGeneratedKeys();
       final Configuration configuration = ms.getConfiguration();
       final TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+      // mapper文件中设置的keyProperties，但是mysql中自增主键只能有一个，为什么properties,我不是很理解
       final String[] keyProperties = ms.getKeyProperties();
+      // JDBC返回参数,java自己封装了一层，然后mysql提供了对应的driver
+      // ,我们调用的，其实就是对应mysql提供的参数，然后又封装了一下，mybatis将生成的参数设置进object
       final ResultSetMetaData rsmd = rs.getMetaData();
       TypeHandler<?>[] typeHandlers = null;
       if (keyProperties != null && rsmd.getColumnCount() >= keyProperties.length) {
@@ -74,6 +77,7 @@ public class Jdbc3KeyGenerator implements KeyGenerator {
             typeHandlers = getTypeHandlers(typeHandlerRegistry, metaParam, keyProperties);
           }
           //填充键值
+          // 填充的时候，会根据metaParam不同类型如map那就是put方法，如果javabean那就是反射，调用（set属性名）
           populateKeys(rs, metaParam, keyProperties, typeHandlers);
         }
       }
@@ -107,6 +111,7 @@ public class Jdbc3KeyGenerator implements KeyGenerator {
       TypeHandler<?> th = typeHandlers[i];
       if (th != null) {
         Object value = th.getResult(rs, i + 1);
+        // 这里设置的时候，是根据不同的来设置的。。。也就是insert时候设置返回主键，然后导致返回结果集时，返回了生成的主键
         metaParam.setValue(keyProperties[i], value);
       }
     }

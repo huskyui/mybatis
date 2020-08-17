@@ -47,7 +47,7 @@ import org.apache.ibatis.type.JdbcType;
  */
 /**
  * XML配置构建器，建造者模式,继承BaseBuilder
- *
+ * 终究还是来到了这一章
  */
 public class XMLConfigBuilder extends BaseBuilder {
 
@@ -87,10 +87,11 @@ public class XMLConfigBuilder extends BaseBuilder {
   //上面6个构造函数最后都合流到这个函数，传入XPathParser
   private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
     //首先调用父类初始化Configuration
+    // 新建一个configuration
     super(new Configuration());
     //错误上下文设置成SQL Mapper Configuration(XML文件配置),以便后面出错了报错用吧
     ErrorContext.instance().resource("SQL Mapper Configuration");
-    //将Properties全部设置到Configuration里面去
+    //将Properties全部设置到Configuration里面去,没看懂
     this.configuration.setVariables(props);
     this.parsed = false;
     this.environment = environment;
@@ -136,7 +137,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       //issue #117 read properties first
       //1.properties
       propertiesElement(root.evalNode("properties"));
-      //2.类型别名
+      //2.类型别名,可以和resultType配合使用
       typeAliasesElement(root.evalNode("typeAliases"));
       //3.插件
       pluginElement(root.evalNode("plugins"));
@@ -144,10 +145,11 @@ public class XMLConfigBuilder extends BaseBuilder {
       objectFactoryElement(root.evalNode("objectFactory"));
       //5.对象包装工厂
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
-      //6.设置
+      //6.设置 settings    logImpl和一些配置进行设置
       settingsElement(root.evalNode("settings"));
       // read it after objectFactory and objectWrapperFactory issue #631
       //7.环境
+      // properties是先开始的，所以，用户名密码我们都可以找到
       environmentsElement(root.evalNode("environments"));
       //8.databaseIdProvider
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
@@ -262,19 +264,23 @@ public class XMLConfigBuilder extends BaseBuilder {
       //传入方式是调用构造函数时传入，public XMLConfigBuilder(Reader reader, String environment, Properties props)
 
       //1.XNode.getChildrenAsProperties函数方便得到孩子所有Properties
+      // properties继承hashTable
       Properties defaults = context.getChildrenAsProperties();
       //2.然后查找resource或者url,加入前面的Properties
       String resource = context.getStringAttribute("resource");
       String url = context.getStringAttribute("url");
+      // resource 和url选一个读取
       if (resource != null && url != null) {
         throw new BuilderException("The properties element cannot specify both a URL and a resource based property file reference.  Please specify one or the other.");
       }
       if (resource != null) {
+        // 读取信息
         defaults.putAll(Resources.getResourceAsProperties(resource));
       } else if (url != null) {
         defaults.putAll(Resources.getUrlAsProperties(url));
       }
       //3.Variables也全部加入Properties
+      // 如果这个variable不为空，那就取出来，然后再加入进去
       Properties vars = configuration.getVariables();
       if (vars != null) {
         defaults.putAll(vars);
@@ -315,13 +321,14 @@ public class XMLConfigBuilder extends BaseBuilder {
       
       //下面非常简单，一个个设置属性
       //如何自动映射列到字段/ 属性
+      // 默认自动映射没有嵌套结构的字段
       configuration.setAutoMappingBehavior(AutoMappingBehavior.valueOf(props.getProperty("autoMappingBehavior", "PARTIAL")));
-      //缓存
+      //缓存，默认开始缓存
       configuration.setCacheEnabled(booleanValueOf(props.getProperty("cacheEnabled"), true));
-      //proxyFactory (CGLIB | JAVASSIST)
-      //延迟加载的核心技术就是用代理模式，CGLIB/JAVASSIST两者选一
+      //proxyFactory (CGLIB | JAVASSIST)，此处的默认值是JAVASSIST
+      //延迟加载的核心技术就是用代理模式，CGLIB/JAVASSIST两者选一,使用cglib需要导入cglib包
       configuration.setProxyFactory((ProxyFactory) createInstance(props.getProperty("proxyFactory")));
-      //延迟加载
+      //延迟加载，
       configuration.setLazyLoadingEnabled(booleanValueOf(props.getProperty("lazyLoadingEnabled"), false));
       //延迟加载时，每种属性是否还要按需加载
       configuration.setAggressiveLazyLoading(booleanValueOf(props.getProperty("aggressiveLazyLoading"), true));
@@ -331,11 +338,12 @@ public class XMLConfigBuilder extends BaseBuilder {
       configuration.setUseColumnLabel(booleanValueOf(props.getProperty("useColumnLabel"), true));
       //允许 JDBC 支持生成的键
       configuration.setUseGeneratedKeys(booleanValueOf(props.getProperty("useGeneratedKeys"), false));
-      //配置默认的执行器
+      //配置默认的执行器,几种不同的执行器
       configuration.setDefaultExecutorType(ExecutorType.valueOf(props.getProperty("defaultExecutorType", "SIMPLE")));
       //超时时间
       configuration.setDefaultStatementTimeout(integerValueOf(props.getProperty("defaultStatementTimeout"), null));
       //是否将DB字段自动映射到驼峰式Java属性（A_COLUMN-->aColumn）
+      // 驼峰式，默认是false
       configuration.setMapUnderscoreToCamelCase(booleanValueOf(props.getProperty("mapUnderscoreToCamelCase"), false));
       //嵌套语句上使用RowBounds
       configuration.setSafeRowBoundsEnabled(booleanValueOf(props.getProperty("safeRowBoundsEnabled"), false));
@@ -377,8 +385,10 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void environmentsElement(XNode context) throws Exception {
     if (context != null) {
       if (environment == null) {
+        // 给environment设置默认值
         environment = context.getStringAttribute("default");
       }
+      // 瞧一瞧看一看，还需要遍历，没看懂哦
       for (XNode child : context.getChildren()) {
         String id = child.getStringAttribute("id");
 		//循环比较id是否就是指定的environment
@@ -386,7 +396,9 @@ public class XMLConfigBuilder extends BaseBuilder {
           //7.1事务管理器
           TransactionFactory txFactory = transactionManagerElement(child.evalNode("transactionManager"));
           //7.2数据源
+          // 根据POOLED 来生成对应的DataSourceFactory
           DataSourceFactory dsFactory = dataSourceElement(child.evalNode("dataSource"));
+
           DataSource dataSource = dsFactory.getDataSource();
           Environment.Builder environmentBuilder = new Environment.Builder(id)
               .transactionFactory(txFactory)
@@ -435,9 +447,11 @@ public class XMLConfigBuilder extends BaseBuilder {
 //</transactionManager>
   private TransactionFactory transactionManagerElement(XNode context) throws Exception {
     if (context != null) {
+      // 根据获取的type的值，来查找TYPE_ALIASES，这个注入的时候是在static方法和Configuration里面注入了属性
       String type = context.getStringAttribute("type");
       Properties props = context.getChildrenAsProperties();
 		//根据type="JDBC"解析返回适当的TransactionFactory
+      //
       TransactionFactory factory = (TransactionFactory) resolveClass(type).newInstance();
       factory.setProperties(props);
       return factory;
@@ -526,6 +540,7 @@ public class XMLConfigBuilder extends BaseBuilder {
 //	</mappers>
 //
 //	10.4自动扫描包下所有映射器
+  // 不能瞎写，不能先写一个package，然后再写读取某个的，会出现错误
 //	<mappers>
 //	  <package name="org.mybatis.builder"/>
 //	</mappers>

@@ -35,6 +35,7 @@ public class CacheRefResolver {
 
   public Cache resolveCacheRef() {
       //反调MapperBuilderAssistant解析
+    // 如果cacheRefNamespace 获取Configuration中caches（map）的value
     return assistant.useCacheRef(cacheRefNamespace);
   }
 }

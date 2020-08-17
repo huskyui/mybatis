@@ -322,6 +322,7 @@ public class Configuration {
 
   public void setProxyFactory(ProxyFactory proxyFactory) {
     if (proxyFactory == null) {
+      // 默认是javassistProxyFactory
       proxyFactory = new JavassistProxyFactory();
     }
     this.proxyFactory = proxyFactory;
@@ -570,7 +571,10 @@ public class Configuration {
 
   public void addResultMap(ResultMap rm) {
     resultMaps.put(rm.getId(), rm);
+    // 没看懂
+    // 在本地检查是否有区分的嵌套结果图
     checkLocallyForDiscriminatedNestedResultMaps(rm);
+    // 全局检查是否有区分的嵌套结果图
     checkGloballyForDiscriminatedNestedResultMaps(rm);
   }
 

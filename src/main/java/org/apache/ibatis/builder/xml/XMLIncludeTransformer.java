@@ -51,6 +51,23 @@ public class XMLIncludeTransformer {
       //拿到SQL片段
       Node toInclude = findSqlFragment(getStringAttribute(source, "refid"));
       //递归调用自己,应用上?
+      /**
+       *
+       *     <sql id="testColumn">
+       *
+       *                 id,teacher_id,<include refid="name"/>
+       *     </sql>
+       *
+       *     <sql id="name">
+       *         name
+       *     </sql>
+       *
+       *     <select id="selectOne" resultType="com.huskyui.pojo.Student">
+       *         select
+       *         <include refid="testColumn"/>
+       *         from student limit 1;
+       *     </select>
+       * */
       applyIncludes(toInclude);
       //总之下面就是将字符串拼接进来，看不懂。。。
       if (toInclude.getOwnerDocument() != source.getOwnerDocument()) {

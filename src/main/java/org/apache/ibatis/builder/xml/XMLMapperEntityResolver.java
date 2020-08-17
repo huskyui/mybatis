@@ -86,7 +86,7 @@ public class XMLMapperEntityResolver implements EntityResolver {
   @Override
   //核心就是覆盖这个方法，达到转public DTD到本地DTD的目的
   public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
-
+    // dtd文件在jar包中，不需要网络请求
     if (publicId != null) {
       publicId = publicId.toUpperCase(Locale.ENGLISH);
     }

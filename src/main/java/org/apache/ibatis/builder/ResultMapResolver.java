@@ -47,6 +47,7 @@ public class ResultMapResolver {
     this.autoMapping = autoMapping;
   }
 
+  // xmlMapperBuilder里面调用此方法
   public ResultMap resolve() {
       //解析又去调用MapperBuilderAssistant.addResultMap
     return assistant.addResultMap(this.id, this.type, this.extend, this.discriminator, this.resultMappings, this.autoMapping);

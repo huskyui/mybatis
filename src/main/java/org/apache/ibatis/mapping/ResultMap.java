@@ -106,6 +106,8 @@ public class ResultMap {
         resultMap.idResultMappings.addAll(resultMap.resultMappings);
       }
       // lock down collections
+      // 所有数据都设置完后，在设置为不可改变
+      // 可以哦，Collections.unmodifiableList,返回无法修改的list
       resultMap.resultMappings = Collections.unmodifiableList(resultMap.resultMappings);
       resultMap.idResultMappings = Collections.unmodifiableList(resultMap.idResultMappings);
       resultMap.constructorResultMappings = Collections.unmodifiableList(resultMap.constructorResultMappings);

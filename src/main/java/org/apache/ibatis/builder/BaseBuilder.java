@@ -55,6 +55,7 @@ public abstract class BaseBuilder {
     return Pattern.compile(regex == null ? defaultValue : regex);
   }
 
+  // 下面就是不同类型，以及如果为空，就使用默认值.用于xmlConfigBuilder里面的参数进行配置时，对某些参数进行调整
   protected Boolean booleanValueOf(String value, Boolean defaultValue) {
     return value == null ? defaultValue : Boolean.valueOf(value);
   }
@@ -64,6 +65,7 @@ public abstract class BaseBuilder {
   }
 
   //把以逗号分割的一个字符串重新包装，返回一个Set
+  // new HashSet<String>(Arrays.asList(...Object))
   protected Set<String> stringSetValueOf(String value, String defaultValue) {
     value = (value == null ? defaultValue : value);
     return new HashSet<String>(Arrays.asList(value.split(",")));
@@ -112,6 +114,7 @@ public abstract class BaseBuilder {
       return null;
     }
     try {
+      // 默认使用构造无参构造器
       return resolveClass(alias).newInstance();
     } catch (Exception e) {
       throw new BuilderException("Error creating instance. Cause: " + e, e);
@@ -153,10 +156,13 @@ public abstract class BaseBuilder {
     }
     // javaType ignored for injected handlers see issue #746 for full detail
     //去typeHandlerRegistry查询对应的TypeHandler
+
+    // 不同类型找对应的处理器，如 register(Boolean.class, new BooleanTypeHandler());
     TypeHandler<?> handler = typeHandlerRegistry.getMappingTypeHandler(typeHandlerType);
     if (handler == null) {
       // not in registry, create a new one
         //如果没有在Registry找到，调用typeHandlerRegistry.getInstance来new一个TypeHandler返回
+      // 有点不明觉厉
       handler = typeHandlerRegistry.getInstance(javaType, typeHandlerType);
     }
     return handler;

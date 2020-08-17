@@ -132,6 +132,7 @@ public class TypeAliasRegistry {
         value = (Class<T>) TYPE_ALIASES.get(key);
       } else {
         //找不到，再试着将String直接转成Class(这样怪不得我们也可以直接用java.lang.Integer的方式定义，也可以就int这么定义)
+        // 找不到别名，就直接使用，classLoader生成一个class
         value = (Class<T>) Resources.classForName(string);
       }
       return value;

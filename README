@@ -71,6 +71,7 @@ org.apache.ibatis.ScriptRunner
 org.apache.ibatis.SqlRunner
 
 12.构建
+走马观花的看完了
 org.apache.ibatis.builder
 org.apache.ibatis.builder.annotation
 org.apache.ibatis.builder.xml

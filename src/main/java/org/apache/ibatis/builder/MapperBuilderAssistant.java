@@ -164,6 +164,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return parameterMap;
   }
 
+  // parameterMap 是 mapper文件里面的一个的一个使用。。大佬说废弃，那么我们就不用了
   public ParameterMapping buildParameterMapping(
       Class<?> parameterType,
       String property,
@@ -189,6 +190,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
   }
 
   //增加ResultMap
+  // 不知是何方至尊强者调用此栈，annotation和xml都有调用
   public ResultMap addResultMap(
       String id,
       Class<?> type,
@@ -201,6 +203,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
 
     //建造者模式
     ResultMap.Builder resultMapBuilder = new ResultMap.Builder(configuration, id, type, resultMappings, autoMapping);
+    // extend 我不是很清楚啊
     if (extend != null) {
       if (!configuration.hasResultMap(extend)) {
         throw new IncompleteElementException("Could not find a parent resultmap with id '" + extend + "'");
@@ -226,7 +229,9 @@ public class MapperBuilderAssistant extends BaseBuilder {
       }
       resultMappings.addAll(extendedResultMappings);
     }
+    // discriminator 我也不清楚
     resultMapBuilder.discriminator(discriminator);
+    // Collections.unmodifiableList
     ResultMap resultMap = resultMapBuilder.build();
     configuration.addResultMap(resultMap);
     return resultMap;
@@ -286,11 +291,11 @@ public class MapperBuilderAssistant extends BaseBuilder {
       String databaseId,
       LanguageDriver lang,
       String resultSets) {
-    
+
     if (unresolvedCacheRef) {
       throw new IncompleteElementException("Cache-ref not yet resolved");
     }
-    
+
     //为id加上namespace前缀
     id = applyCurrentNamespace(id, false);
     //是否是select语句
@@ -425,7 +430,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
       Class<? extends TypeHandler<?>> typeHandler,
       List<ResultFlag> flags,
       String resultSet,
-      String foreignColumn, 
+      String foreignColumn,
       boolean lazy) {
     Class<?> javaTypeClass = resolveResultJavaType(resultType, property, javaType);
     TypeHandler<?> typeHandlerInstance = resolveTypeHandler(javaTypeClass, typeHandler);
@@ -528,9 +533,9 @@ public class MapperBuilderAssistant extends BaseBuilder {
       Class<? extends TypeHandler<?>> typeHandler,
       List<ResultFlag> flags) {
       return buildResultMapping(
-        resultType, property, column, javaType, jdbcType, nestedSelect, 
+        resultType, property, column, javaType, jdbcType, nestedSelect,
         nestedResultMap, notNullColumn, columnPrefix, typeHandler, flags, null, null, configuration.isLazyLoadingEnabled());
-  }  
+  }
 
   //取得语言驱动
   public LanguageDriver getLanguageDriver(Class<?> langClass) {
@@ -568,9 +573,9 @@ public class MapperBuilderAssistant extends BaseBuilder {
     String databaseId,
     LanguageDriver lang) {
     return addMappedStatement(
-      id, sqlSource, statementType, sqlCommandType, fetchSize, timeout, 
-      parameterMap, parameterType, resultMap, resultType, resultSetType, 
-      flushCache, useCache, resultOrdered, keyGenerator, keyProperty, 
+      id, sqlSource, statementType, sqlCommandType, fetchSize, timeout,
+      parameterMap, parameterType, resultMap, resultType, resultSetType,
+      flushCache, useCache, resultOrdered, keyGenerator, keyProperty,
       keyColumn, databaseId, lang, null);
   }
 

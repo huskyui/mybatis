@@ -136,6 +136,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       //4.配置parameterMap(已经废弃,老式风格的参数映射)
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       //5.配置resultMap(高级功能)
+      // 注意这里是使用evalNodes,是多个的意思
       resultMapElements(context.evalNodes("/mapper/resultMap"));
       //6.配置sql(定义可重用的 SQL 代码段)
       sqlElement(context.evalNodes("/mapper/sql"));
@@ -316,7 +317,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     ErrorContext.instance().activity("processing " + resultMapNode.getValueBasedIdentifier());
     String id = resultMapNode.getStringAttribute("id",
         resultMapNode.getValueBasedIdentifier());
-    //一般拿type就可以了，后面3个难道是兼容老的代码？
+    //一般拿type就可以了，后面3个难道是兼容老的代码？, 这是向下兼容的代码，默认值是为如果新的不存在，就用老的
     String type = resultMapNode.getStringAttribute("type",
         resultMapNode.getStringAttribute("ofType",
             resultMapNode.getStringAttribute("resultType",
@@ -328,10 +329,12 @@ public class XMLMapperBuilder extends BaseBuilder {
     String extend = resultMapNode.getStringAttribute("extends");
     //autoMapping
     Boolean autoMapping = resultMapNode.getBooleanAttribute("autoMapping");
+    // resultType
     Class<?> typeClass = resolveClass(type);
     Discriminator discriminator = null;
     List<ResultMapping> resultMappings = new ArrayList<ResultMapping>();
     resultMappings.addAll(additionalResultMappings);
+    // 下面就是id，result
     List<XNode> resultChildren = resultMapNode.getChildren();
     for (XNode resultChild : resultChildren) {
       if ("constructor".equals(resultChild.getName())) {
@@ -472,6 +475,7 @@ public class XMLMapperBuilder extends BaseBuilder {
   //5.1.1.1 处理嵌套的result map
   private String processNestedResultMappings(XNode context, List<ResultMapping> resultMappings) throws Exception {
 	  //处理association|collection|case
+    //
     if ("association".equals(context.getName())
         || "collection".equals(context.getName())
         || "case".equals(context.getName())) {

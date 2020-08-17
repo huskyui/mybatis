@@ -42,7 +42,9 @@ public @interface Result {
 
   Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
 
+  // 一对一，one to one association
   One one() default @One;
 
+  // 一对多 one to many collection
   Many many() default @Many;
 }

@@ -28,6 +28,7 @@ public enum AutoMappingBehavior {
   NONE,
 
   /**
+   * 仅自动映射结果，而内部没有定义嵌套的结果映射
    * Will only auto-map results with no nested result mappings defined inside.
    */
   PARTIAL,

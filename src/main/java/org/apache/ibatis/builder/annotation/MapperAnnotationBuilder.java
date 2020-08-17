@@ -103,7 +103,7 @@ public class MapperAnnotationBuilder {
     this.assistant = new MapperBuilderAssistant(configuration, resource);
     this.configuration = configuration;
     this.type = type;
-
+// 增加8种注解
     sqlAnnotationTypes.add(Select.class);
     sqlAnnotationTypes.add(Insert.class);
     sqlAnnotationTypes.add(Update.class);
@@ -118,9 +118,11 @@ public class MapperAnnotationBuilder {
   public void parse() {
     String resource = type.toString();
     if (!configuration.isResourceLoaded(resource)) {
+      // 此处先加载xml的资源
       loadXmlResource();
       configuration.addLoadedResource(resource);
       assistant.setCurrentNamespace(type.getName());
+      // 这是在类上面的
       parseCache();
       parseCacheRef();
       Method[] methods = type.getMethods();
@@ -194,6 +196,7 @@ public class MapperAnnotationBuilder {
     Results results = method.getAnnotation(Results.class);
     TypeDiscriminator typeDiscriminator = method.getAnnotation(TypeDiscriminator.class);
     String resultMapId = generateResultMapName(method);
+    // 这边就是resultIf是返回results里面的result数组
     applyResultMap(resultMapId, returnType, argsIf(args), resultsIf(results), typeDiscriminator);
     return resultMapId;
   }
@@ -492,7 +495,9 @@ public class MapperAnnotationBuilder {
       }
       ResultMapping resultMapping = assistant.buildResultMapping(
           resultType,
+          // property
           nullOrEmpty(result.property()),
+          // column
           nullOrEmpty(result.column()),
           result.javaType() == void.class ? null : result.javaType(),
           result.jdbcType() == JdbcType.UNDEFINED ? null : result.jdbcType(),
@@ -510,11 +515,14 @@ public class MapperAnnotationBuilder {
   }
 
   private String nestedSelectId(Result result) {
+
     String nestedSelect = result.one().select();
+    // 如果nestedSelect是空，就用many
     if (nestedSelect.length() < 1) {
       nestedSelect = result.many().select();
     }
     if (!nestedSelect.contains(".")) {
+      // 如果是不包含.  那么默认是同一个文件里面,加个前缀
       nestedSelect = type.getName() + "." + nestedSelect;
     }
     return nestedSelect;
@@ -531,6 +539,7 @@ public class MapperAnnotationBuilder {
   }
   
   private boolean hasNestedSelect(Result result) {
+    // one 和many只能有一个，不能同时存在
     if (result.one().select().length() > 0 && result.many().select().length() > 0) {
       throw new BuilderException("Cannot use both @One and @Many annotations in the same @Result");
     }
